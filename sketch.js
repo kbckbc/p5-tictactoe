@@ -1,7 +1,7 @@
-const bw = 500;     // board width
-const gw = bw/3;    // grid width
-const fontSize = 10;
-const fontColor = 'gray';
+let bw;     // board width
+let gw;    // grid width
+let fontSize;
+let fontColor;
 
 const player = ['O','X']; // 'O' for human, 'X' for ai
 let currPlayer;    // 0 : 'O', 1 : 'X'
@@ -19,6 +19,10 @@ let board = [];
 // [2] : line number
 
 let selectLv;
+let autoBtn;
+let matchBtn;
+let resultBtn;
+
 let prevLv = 'Random';
 let playMode = 1; // 0: auto, 1:mouse click
 let oScoreTable = {
@@ -33,7 +37,32 @@ let xScoreTable = {
 };
 
 
+function windowResized() {
+  initSize(windowWidth, windowHeight);
+  resizeCanvas(bw, bw);
+  selectLv.style('font-size',fontSize);
+  autoBtn.style('font-size',fontSize);
+  matchBtn.style('font-size',fontSize);
+  resultBtn.style('font-size',fontSize);
+}
+
+
+function initSize(w, h){
+  if( w > h) {
+    bw = h - 100;
+  }
+  else {
+    bw = w - 100;
+  }  
+  gw = bw/3;    // grid width
+  fontSize = floor(bw/25) + 'px';
+  fontColor = 'gray'; 
+}
+
+
 function setup() {
+  initSize(windowWidth, windowHeight);
+ 
   createCanvas(bw, bw);
   frameRate(3);
   initGame();
@@ -60,7 +89,6 @@ function draw() {
     drawWinningLine(board);
     let resultStr = '#' + ++numOfGame + ' Game winner is ' + winner;
     let p = createP(resultStr).style('color',fontColor).style('font-size',fontSize);
-    p.position(0, bw + 50)
     noLoop();
   }
 }
@@ -99,19 +127,19 @@ function initGame() {
 
 
 function initElements() {
-  selectLv = createSelect();
+  selectLv = createSelect().style('font-size',fontSize);;
   selectLv.option('Random');
   selectLv.option('Ai(min max)');
   selectLv.selected(prevLv);
   selectLv.changed(mySelectEvent);
 
-  let autoBtn = createButton('Auto play');
+  autoBtn = createButton('Auto play').style('font-size',fontSize);
   autoBtn.mousePressed(autoGame);
   
-  let matchBtn = createButton('Match play');
+  matchBtn = createButton('Match play').style('font-size',fontSize);
   matchBtn.mousePressed(matchGame);
   
-  let resultBtn = createButton('Show result');
+  resultBtn = createButton('Show result').style('font-size',fontSize);
   resultBtn.mousePressed(showResult);
   
   let p = createP('Choose a level and click to play').style('color',fontColor).style('font-size',fontSize);
@@ -139,14 +167,12 @@ function showResult() {
   let t = tieWin;
   
   let str = 'Total game #' + n + ', O : X : Tie = ' + h + ' : ' + c + ' : ' + t;
-  console.log(str);
   let p = createP(str).style('color',fontColor).style('font-size',fontSize);
-  p.position(0, bw + 80)
 }
 
 
 function drawEmptyBoard() {
-  strokeWeight(3);
+  strokeWeight(5);
   line(gw,0,gw,height);
   line(gw*2,0,gw*2,height);
   line(0,gw,width,gw);
@@ -190,7 +216,7 @@ function drawWinningLine(board) {
   
   //console.log(d,n);
   
-  strokeWeight(10);
+  strokeWeight(15);
   if(w == 'O') {
     stroke(color(0,255,0));  
   }
